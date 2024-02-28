@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    nginx: nginx
+    apache: apache
+  name: my-pod
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+          protocol: TCP
+      resources: {}
+    - image: busybox
+      name: busybox
+      args:
+        - sleep
+        - "600"
+      ports:
+        - containerPort: 81
+          protocol: TCP
+      resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
