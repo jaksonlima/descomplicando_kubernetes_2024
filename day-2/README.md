@@ -19,3 +19,13 @@ k exec pods/nginx-1 -it -- bash
 
 k exec pods/nginx -- cat /usr/share/nginx/html/index.html
 ```
+
+# Stress Pod
+
+```
+k exec pods/limitado -it -- bash
+
+apt-get update && apt-get install -y stress
+
+stress --cpu 1 --vm 1 --vm-bytes 110M
+```
