@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: deploy-namespace
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploy-namespace-nginx
+  namespace: deploy-namespace
+  labels:
+    deploy-namespace: nginx
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 100%
+      maxUnavailable: 0%
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - image: nginx
+          name: container-nginx
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: "0.5"
+              memory: 265Mi
+            requests:
+              cpu: "0.3"
+              memory: 65Mi
