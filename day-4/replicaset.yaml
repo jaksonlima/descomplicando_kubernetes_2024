@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx-replicaset
+  labels:
+    name: nginx-replicaset
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx-replicaset
+  template:
+    metadata:
+      labels:
+        app: nginx-replicaset
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          resources:
+            requests:
+              cpu: "0.3"
+              memory: "24Mi"
+            limits:
+              cpu: "0.5"
+              memory: "64Mi"
