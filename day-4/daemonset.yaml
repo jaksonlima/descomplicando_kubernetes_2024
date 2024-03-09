@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: prom-deamonset
+  labels:
+    prom: deamonset
+spec:
+  selector:
+    matchLabels:
+      app: prom-deamonset
+  template:
+    metadata:
+      labels:
+        app: prom-deamonset
+    spec:
+      hostNetwork: true
+      containers:
+        - name: app
+          image: prom/node-exporter:latest
+          ports:
+            - containerPort: 9100
+              hostPort: 9100
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly: true
+            - name: sys
+              mountPath: /host/sys
+              readOnly: true
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
