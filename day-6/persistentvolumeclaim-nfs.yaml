@@ -1,0 +1,63 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: meu-sc
+provisioner: kubernetes.io/no-provisioner
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    storage: lento
+  name: meu-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: 172.20.31.141
+    path: "/mnt/nfs"
+  storageClassName: meu-sc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    pvc: meu-primeiro-pvc
+  name: meu-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: meu-sc
+  selector:
+    matchLabels:
+      storage: meu-pv
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    run: nginx
+    app: nginx
+spec:
+  containers:
+    - image: nginx
+      name: nginx
+      ports:
+        - containerPort: 80
+      resources: {}
+      volumeMounts:
+        - name: meu-pvc
+          mountPath: /usr/share/nginx/html
+  volumes:
+    - name: meu-pvc
+      persistentVolumeClaim:
+        claimName: meu-pvc
