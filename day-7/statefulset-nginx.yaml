@@ -1,24 +1,24 @@
 apiVersion: apps/v1
-kind: StateFulSet
+kind: StatefulSet
 metadata:
-  name: nginx
+  name: mystatefulset
 spec:
-  serviceName: nginx
-  replicas: 3
   selector:
     matchLabels:
-      app: nginx
+      app: myapp
+  serviceName: service-nginx-headless
+  replicas: 2
   template:
     metadata:
       labels:
-        app: nginx
+        app: myapp
     spec:
       containers:
-        - name: nginx
+        - name: myapp
           image: nginx
           ports:
             - containerPort: 80
-              name: http
+              name: web
           volumeMounts:
             - name: nginx-persistent-storage
               mountPath: /usr/share/nginx/html
@@ -26,7 +26,7 @@ spec:
     - metadata:
         name: nginx-persistent-storage
       spec:
-        acessModes: ["ReadWriteOnce"]
-        resouces:
+        accessModes: ["ReadWriteOnce"]
+        resources:
           requests:
             storage: 1Gi
